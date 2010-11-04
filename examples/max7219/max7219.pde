@@ -44,7 +44,6 @@ using.
 */
 #include <Maxim.h>
 
-boolean debug_putByte = true;
 boolean debug_led = true;
 
 int vel = 100;
@@ -55,12 +54,12 @@ int clock = 8;
 
 int maxInUse = 1;    //change this variable to set how many MAX7219's you'll use
 
+Maxim maxim(dataIn, load, clock, maxInUse);
+
 void setup () {
   //beginSerial(9600);
   Serial.begin(9600);
   //digitalWrite(13, HIGH);
-  
-  Maxim.setup(dataIn, load, clock, maxInUse);
 }  
 
 void loop () {
@@ -83,10 +82,10 @@ void loop () {
           Serial.print(", ");
           Serial.print(values[my_col_pow]);
         }
-        Maxim.one(my_max_num, my_reg, values[my_col_pow]);
+        maxim.one(my_max_num, my_reg, values[my_col_pow]);
         delay(vel-my_delta);
       }
-      Maxim.one(my_max_num,my_reg,0);
+      maxim.one(my_max_num,my_reg,0);
     }
     debug_led = false;
   }

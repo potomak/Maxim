@@ -22,7 +22,7 @@
  * software can test whether it will be compatible with the currently
  * installed firmware. */
 #define MAXIM_MAJOR_VERSION   0 // for non-compatible changes
-#define MAXIM_MINOR_VERSION   1 // for backwards compatible changes
+#define MAXIM_MINOR_VERSION   2 // for backwards compatible changes
 
 // define max7219 registers
 #define MAX7219_REG_NOOP         0x00
@@ -42,7 +42,7 @@
 
 
 // TODO make it a subclass of a generic Serial/Stream base class
-class MaximClass
+class Maxim
 {
   int dataIn;
   int load;
@@ -51,8 +51,8 @@ class MaximClass
   int maxInUse;
   
 public:
-  /* MaximClass constructor */
-  MaximClass();
+  /* Maxim constructor */
+  Maxim(int, int, int, int);
   
   void setup(int, int, int, int);
   
@@ -63,8 +63,6 @@ public:
 private:
   void putByte(byte);
 };
-
-extern MaximClass Maxim;
 
 #endif /* Maxim_h */
 

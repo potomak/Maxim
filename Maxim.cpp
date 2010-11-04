@@ -27,13 +27,16 @@ extern "C" {
 //* Constructors
 //******************************************************************************
 
-MaximClass::MaximClass() {}
+Maxim::Maxim(int dataIn_, int load_, int clock_, int maxInUse_)
+{
+	setup(dataIn_, load_, clock_, maxInUse_);
+}
 
 //******************************************************************************
 //* Public Methods
 //******************************************************************************
 
-void MaximClass::setup(int dataIn_, int load_, int clock_, int maxInUse_)
+void Maxim::setup(int dataIn_, int load_, int clock_, int maxInUse_)
 {
   dataIn   = dataIn_;
   load     = load_;
@@ -45,9 +48,9 @@ void MaximClass::setup(int dataIn_, int load_, int clock_, int maxInUse_)
   pinMode(load,   OUTPUT);
   
   //initiation of the max 7219
-  all(MAX7219_REG_SCANLIMIT, 0x07);      
-  all(MAX7219_REG_DECODEMODE, 0x00);  // using an led matrix (not digits)
-  all(MAX7219_REG_SHUTDOWN, 0x01);    // not in shutdown mode
+  all(MAX7219_REG_SCANLIMIT,   0x07);      
+  all(MAX7219_REG_DECODEMODE,  0x00); // using an led matrix (not digits)
+  all(MAX7219_REG_SHUTDOWN,    0x01); // not in shutdown mode
   all(MAX7219_REG_DISPLAYTEST, 0x00); // no display test
   for(int e = 1; e <= 8; e++)
   { // empty registers, turn all LEDs off 
@@ -58,7 +61,7 @@ void MaximClass::setup(int dataIn_, int load_, int clock_, int maxInUse_)
 }
 
 //maxSingle is the "easy" function to use for a single max7219
-void MaximClass::single(byte reg, byte col)
+void Maxim::single(byte reg, byte col)
 {
   digitalWrite(load, LOW);       // begin     
   putByte(reg);                  // specify register
@@ -68,7 +71,7 @@ void MaximClass::single(byte reg, byte col)
 }
 
 // initialize  all  MAX7219's in the system
-void MaximClass::all(byte reg, byte col)
+void Maxim::all(byte reg, byte col)
 {
   digitalWrite(load, LOW);  // begin
   for(int c = 1; c <= maxInUse; c++)
@@ -82,7 +85,7 @@ void MaximClass::all(byte reg, byte col)
 
 // maxOne is for adressing different MAX7219's,
 // while having a couple of them cascaded
-void MaximClass::one(byte maxNr, byte reg, byte col)
+void Maxim::one(byte maxNr, byte reg, byte col)
 {
   digitalWrite(load, LOW);  // begin
 
@@ -109,24 +112,20 @@ void MaximClass::one(byte maxNr, byte reg, byte col)
 //* Private Methods
 //******************************************************************************
 
-void MaximClass::putByte(byte data)
+void Maxim::putByte(byte data)
 {
   byte i = 8;
   byte mask;
   while(i > 0)
   {
-    mask = 0x01 << (i - 1);            // get bitmask
+    mask = 0x01 << (i - 1);       // get bitmask
     digitalWrite(clock, LOW);     // tick
-    if (data & mask) {                 // choose bit
+    if (data & mask) {            // choose bit
       digitalWrite(dataIn, HIGH); // send 1
     } else {
       digitalWrite(dataIn, LOW);  // send 0
     }
     digitalWrite(clock, HIGH);    // tock
-    --i;                               // move to lesser bit
+    --i;                          // move to lesser bit
   }
 }
-
-// make one instance for the user to use
-MaximClass Maxim;
-
